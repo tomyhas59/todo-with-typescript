@@ -1,34 +1,48 @@
-import React, { useState } from "react";
-
+import React, { useState, useRef } from "react";
 import "./App.css";
-import Store from "./components/Store";
-import { Address, ChineseFood } from "./modelType/data";
-import BestMenu from "./components/BestMenu";
+import AllList from "./components/AllList";
+import { AllData } from "./modelType/allList";
 
-const data: ChineseFood = {
-  name: "북경반점",
-  category: "중식",
-  address: {
-    city: "서울",
-    detail: "관악구 OO동 OO번지",
-    zipCode: 234234,
+const initialAllData: AllData[] = [
+  {
+    id: 1,
+    data: "타입스크립트 공부",
+    done: false,
   },
-  menu: [
-    { name: "짜장면", price: 5000 },
-    { name: "짬뽕", price: 6000 },
-    { name: "탕수육", price: 15000 },
-  ],
-};
+];
 
 const App: React.FC = () => {
-  const [myStore, setMyStore] = useState<ChineseFood>(data);
-  const changeAddress = (address: Address) => {
-    setMyStore({ ...myStore, address: address });
+  const [allData, setAllData] = useState<AllData[]>(initialAllData);
+  const [todo, setTodo] = useState<string>("");
+  const todoRef = useRef<HTMLInputElement | null>(null);
+
+  const onChangeTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTodo(e.target.value);
   };
+
+  const onAddTodo = () => {
+    if (todo.trim() !== "") {
+      const newTodo: AllData = {
+        id: allData.length + 1,
+        data: todo,
+        done: false,
+      };
+      setAllData([...allData, newTodo]);
+      setTodo("");
+      todoRef.current?.focus();
+    }
+  };
+
   return (
-    <div className="App">
-      <Store data={myStore} changeAddress={changeAddress} />
-      <BestMenu name="양장피" price={20000} />
+    <div>
+      <input
+        placeholder="할 일을 적어주세요!"
+        onChange={onChangeTodo}
+        value={todo}
+        ref={todoRef}
+      />
+      <button onClick={onAddTodo}>추가</button>
+      <AllList allData={allData} setAllData={setAllData} />
     </div>
   );
 };
