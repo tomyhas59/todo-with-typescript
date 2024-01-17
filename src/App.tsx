@@ -33,6 +33,11 @@ const App: React.FC = () => {
     }
   };
 
+  const onEnter = (e: any) => {
+    if (e.key === "Enter") {
+      onAddTodo();
+    }
+  };
   return (
     <div>
       <input
@@ -40,6 +45,7 @@ const App: React.FC = () => {
         onChange={onChangeTodo}
         value={todo}
         ref={todoRef}
+        onKeyUp={onEnter}
       />
       <button onClick={onAddTodo}>추가</button>
       <AllList allData={allData} setAllData={setAllData} />
